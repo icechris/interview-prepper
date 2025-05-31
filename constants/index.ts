@@ -97,6 +97,215 @@ export const mappings = {
   "aws amplify": "amplify",
 };
 
+// /constants/index.ts
+
+export const generator = {
+  name: "interview_prep",
+  nodes: [
+    {
+      name: "introduction",
+      type: "conversation",
+      isStart: true,
+      metadata: {
+        position: {
+          x: -406.40439199567606,
+          y: -194.26227467099065,
+        },
+      },
+      prompt: "Greet the user and help them create a new user AI interviewer",
+      model: {
+        model: "gpt-4o",
+        provider: "openai",
+        maxTokens: 1000,
+        temperature: 0.7,
+      },
+      variableExtractionPlan: {
+        output: [
+          {
+            enum: ["entry", "mid", "senior"],
+            type: "string",
+            title: "level",
+            description: "The job experience level.",
+          },
+          {
+            enum: [],
+            type: "number",
+            title: "amount",
+            description: "How many questions would you like to generate? -",
+          },
+          {
+            enum: [],
+            type: "string",
+            title: "techstack",
+            description: "A list of technologies to cover during the job interview. ",
+          },
+          {
+            enum: [],
+            type: "string",
+            title: "role",
+            description: "What role should would you like to train for?",
+          },
+          {
+            enum: [],
+            type: "string",
+            title: "type",
+            description: "What type of the interview should it be? ",
+          },
+        ],
+      },
+      messagePlan: {
+        firstMessage: "Hey there!",
+      },
+    },
+    {
+      name: "conversation_1748693350964",
+      type: "conversation",
+      metadata: {
+        position: {
+          x: -443.1362124020968,
+          y: 118.90995224548979,
+        },
+      },
+      prompt: "Say that the Interview will be generated shortly.",
+      model: {
+        model: "gpt-4o",
+        provider: "openai",
+        maxTokens: 1000,
+        temperature: 0.7,
+      },
+      messagePlan: {
+        firstMessage: "",
+      },
+    },
+    {
+      name: "API Request",
+      type: "tool",
+      metadata: {
+        position: {
+          x: -390.2431169628191,
+          y: 486.4501643327736,
+        },
+      },
+      tool: {
+        url: "https://interview-prepper-theta.vercel.app/api/vapi/generate",
+        body: {
+          type: "object",
+          required: ["role", "level", "techstack", "amount", "type"],
+          properties: {
+            role: {
+              type: "string",
+              value: "{{ role }}",
+              description: "",
+            },
+            type: {
+              type: "string",
+              value: "{{ type }}",
+              description: "",
+            },
+            level: {
+              type: "string",
+              value: "{{ level }}",
+              description: "",
+            },
+            amount: {
+              type: "number",
+              value: "{{ amount }}",
+              description: "",
+            },
+            techstack: {
+              type: "string",
+              value: "{{ techstack }}",
+              description: "",
+            },
+          },
+        },
+        name: "Endpoint",
+        type: "apiRequest",
+        method: "POST",
+        function: {
+          name: "untitled_tool",
+          parameters: {
+            type: "object",
+            required: [],
+            properties: {},
+          },
+        },
+      },
+    },
+    {
+      name: "conversation_1748694292911",
+      type: "conversation",
+      metadata: {
+        position: {
+          x: -390.2431169628191,
+          y: 736.4501643327736,
+        },
+      },
+      prompt:
+        " thank the user for their time and informing them that the interview has been generated successfully",
+      model: {
+        model: "gpt-4o",
+        provider: "openai",
+        maxTokens: 1000,
+        temperature: 0.7,
+      },
+      messagePlan: {
+        firstMessage: "",
+      },
+    },
+    {
+      name: "hangup_1748694336213",
+      type: "tool",
+      metadata: {
+        position: {
+          x: -426.8889987404375,
+          y: 1150.388279164429,
+        },
+      },
+      tool: {
+        type: "endCall",
+      },
+    },
+  ],
+  edges: [
+    {
+      from: "introduction",
+      to: "conversation_1748693350964",
+      condition: {
+        type: "ai",
+        prompt: "If user provided all the required variables",
+      },
+    },
+    {
+      from: "conversation_1748693350964",
+      to: "API Request",
+      condition: {
+        type: "ai",
+        prompt: "",
+      },
+    },
+    {
+      from: "API Request",
+      to: "conversation_1748694292911",
+      condition: {
+        type: "ai",
+        prompt: "",
+      },
+    },
+    {
+      from: "conversation_1748694292911",
+      to: "hangup_1748694336213",
+      condition: {
+        type: "ai",
+        prompt: "",
+      },
+    },
+  ],
+  globalPrompt:
+    "You are a voice assistant helping with creating new AI interviewers. Your task is to collect data from the user. Remember that this is a voice conversation - do not use any special characters.",
+};
+
+
 export const interviewer: CreateAssistantDTO = {
   name: "Interviewer",
   firstMessage:
