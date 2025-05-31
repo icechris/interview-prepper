@@ -1,3 +1,6 @@
+'use server';
+
+
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
@@ -91,17 +94,18 @@ const InterviewCard = async ({
         <div className="flex flex-row justify-between">
           <DisplayTechIcons techStack={techstack} />
 
-          <Button className="btn-primary">
-            <Link
-              href={
-                feedback
-                  ? `/interview/${interviewId}/feedback`
-                  : `/interview/${interviewId}`
-              }
-            >
-              {feedback ? "Check Feedback" : "View Interview"}
-            </Link>
-          </Button>
+          <Button asChild className="btn-primary">
+  <Link
+    href={
+      feedback
+        ? `/interview/${interviewId}/feedback`
+        : `/interview/${interviewId}`
+    }
+  >
+    {feedback ? "Check Feedback" : "View Interview"}
+  </Link>
+</Button>
+
         </div>
       </div>
     </div>
